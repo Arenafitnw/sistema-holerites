@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Holerites</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 500px;
+            margin: 50px auto;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input[type="text"], 
+        input[type="password"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button, .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        button:hover, .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .hidden {
+            display: none;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #ddd;
+            cursor: pointer;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .admin-dashboard {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 20px 0;
+        }
+        .employee-panel {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 20px 0;
+        }
+        .alert {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .store-selector {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .store-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #34495e;
+            color: white;
+            border-radius: 4px;
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        .filter-controls label {
+            margin-bottom: 0;
+            display: inline-block;
+        }
+        .filter-controls select {
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Holerites</h1>
+    </header>
+
+    <div class="container">
+        <!-- Login Form -->
+        <div id="loginForm" class="login-container">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" placeholder="Digite seu usuário">
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" placeholder="Digite sua senha">
+            </div>
+            <div class="form-group">
+                <button onclick="login()">Entrar</button>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="hidden">
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('storeManagement')">Gerenciar Lojas</div>
+                <div class="tab" onclick="showTab('employeeManagement')">Gerenciar Funcionários</div>
+                <div class="tab" onclick="showTab('payslipManagement')">Gerenciar Holerites</div>
+                <button class="btn btn-danger" style="margin-left: auto;" onclick="logout()">Sair</button>
+            </div>
+
+            <!-- Store Management Tab -->
+            <div id="storeManagement" class="admin-dashboard">
+                <h2>Gerenciamento de Lojas</h2>
+                
+                <div class="form-group">
+                    <h3>Adicionar Nova Loja</h3>
+                    <div class="form-group">
+                        <label for="newStoreName">Nome da Loja:</label>
+                        <input type="text" id="newStoreName" placeholder="Nome da loja">
+                    </div>
+                    <div class="form-group">
+                        <label for="newStoreCode">Código da Loja:</label>
+                        <input type="text" id="newStoreCode" placeholder="Código único para a loja">
+                    </div>
+                    <button class="btn btn-success" onclick="addStore()">Adicionar Loja</button>
+                </div>
+
+                <h3>Lista de Lojas</h3>
+                <table id="storeTable">
+                    <thead>
+                        <tr>
+                            <th>Nome da Loja</th>
+                            <th>Código</th>
+                            <th>Funcionários</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Stores will be added here via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Employee Management Tab -->
+            <div id="employeeManagement" class="admin-dashboard hidden">
+                <h2>Gerenciamento de Funcionários</h2>
+                
+                <div class="store-selector">
+                    <label for="employeeStoreFilter">Filtrar por Loja:</label>
+                    <select id="employeeStoreFilter" onchange="filterEmployeesByStore()">
+                        <option value="all">Todas as Lojas</option>
+                        <!-- Store options will be added here via JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Adicionar Funcionário</h3>
+                    <div class="form-group">
+                        <label for="newEmployeeName">Nome:</label>
+                        <input type="text" id="newEmployeeName" placeholder="Nome do funcionário">
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmployeeId">ID/Matrícula:</label>
+                        <input type="text" id="newEmployeeId" placeholder="ID ou matrícula">
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmployeeStore">Loja:</label>
+                        <select id="newEmployeeStore">
+                            <option value="">Selecione uma loja</option>
+                            <!-- Store options will be added here via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmployeePassword">Senha Inicial:</label>
+                        <input type="text" id="newEmployeePassword" placeholder="Senha inicial">
+                    </div>
+                    <button class="btn btn-success" onclick="addEmployee()">Adicionar Funcionário</button>
+                </div>
+
+                <h3>Lista de Funcionários</h3>
+                <table id="employeeTable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>ID/Matrícula</th>
+                            <th>Loja</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Employees will be added here via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Payslip Management Tab -->
+            <div id="payslipManagement" class="admin-dashboard hidden">
+                <h2>Gerenciamento de Holerites</h2>
+                
+                <div class="filter-controls">
+                    <label for="payslipStoreFilter">Filtrar por Loja:</label>
+                    <select id="payslipStoreFilter" onchange="updatePayslipEmployeeSelect()">
+                        <option value="all">Todas as Lojas</option>
+                        <!-- Store options will be added here via JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Adicionar Holerite</h3>
+                    <div class="form-group">
+                        <label for="payslipStore">Loja:</label>
+                        <select id="payslipStore" onchange="updatePayslipEmployeeSelect()">
+                            <option value="">Selecione uma loja</option>
+                            <!-- Store options will be added here via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payslipEmployee">Funcionário:</label>
+                        <select id="payslipEmployee">
+                            <option value="">Selecione um funcionário</option>
+                            <!-- Options will be added here via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payslipMonth">Mês/Ano:</label>
+                        <input type="text" id="payslipMonth" placeholder="Ex: Janeiro/2025">
+                    </div>
+                    <div class="form-group">
+                        <label for="payslipFile">Arquivo PDF:</label>
+                        <input type="file" id="payslipFile" accept=".pdf">
+                    </div>
+                    <button class="btn btn-success" onclick="addPayslip()">Adicionar Holerite</button>
+                </div>
+
+                <h3>Holerites Cadastrados</h3>
+                <div class="filter-controls">
+                    <label for="payslipListStoreFilter">Filtrar Listagem por Loja:</label>
+                    <select id="payslipListStoreFilter" onchange="filterPayslipsByStore()">
+                        <option value="all">Todas as Lojas</option>
+                        <!-- Store options will be added here via JavaScript -->
+                    </select>
+                </div>
+                <table id="payslipTable">
+                    <thead>
+                        <tr>
+                            <th>Loja</th>
+                            <th>Funcionário</th>
+                            <th>Mês/Ano</th>
+                            <th>Arquivo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Payslips will be added here via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Employee Panel -->
+        <div id="employeePanel" class="hidden">
+            <div class="employee-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2>Bem-vindo, <span id="employeeName"></span></h2>
+                        <div class="store-badge" id="employeeStoreBadge"></div>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()">Sair</button>
+                </div>
+                
+                <h3>Seus Holerites</h3>
+                <table id="employeePayslipTable">
+                    <thead>
+                        <tr>
+                            <th>Mês/Ano</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Employee payslips will be added here via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let stores = [
+            { id: 'tacaruna', name: 'Tacaruna', employeeCount: 0 },
+            { id: 'riomar', name: 'Riomar', employeeCount: 0 },
+            { id: 'patteo', name: 'Patteo', employeeCount: 0 },
+            { id: 'northway', name: 'North Way', employeeCount: 0 },
+            { id: 'difusora', name: 'Difusora', employeeCount: 0 },
+            { id: 'caruaru', name: 'Caruaru', employeeCount: 0 }
+        ];
+
+        let employees = [
+            { id: 'admin', name: 'Administrador', password: 'admin123', isAdmin: true, storeId: null },
+            { id: '12345', name: 'João Silva', password: 'senha123', isAdmin: false, storeId: 'tacaruna' },
+            { id: '67890', name: 'Maria Oliveira', password: 'senha456', isAdmin: false, storeId: 'riomar' },
+            { id: '13579', name: 'Carlos Santos', password: 'senha789', isAdmin: false, storeId: 'patteo' }
+        ];
+
+        let payslips = [
+            { employeeId: '12345', month: 'Março/2025', filename: 'holerite_joao_mar2025.pdf', storeId: 'tacaruna' },
+            { employeeId: '12345', month: 'Fevereiro/2025', filename: 'holerite_joao_fev2025.pdf', storeId: 'tacaruna' },
+            { employeeId: '67890', month: 'Março/2025', filename: 'holerite_maria_mar2025.pdf', storeId: 'riomar' },
+            { employeeId: '13579', month: 'Março/2025', filename: 'holerite_carlos_mar2025.pdf', storeId: 'patteo' }
+        ];
+
+        let currentUser = null;
+        let currentStoreFilter = 'all';
+
+        // Initialize the app when the page loads
+        window.onload = function() {
+            updateStoreCounters();
+            updateStoreTable();
+            updateStoreSelects();
+            updateEmployeeTable();
+            updatePayslipEmployeeSelect();
+            updatePayslipTable();
+        };
+
+        // Function to update store employee counters
+        function updateStoreCounters() {
+            stores.forEach(store => {
+                store.employeeCount = employees.filter(e => e.storeId === store.id && !e.isAdmin).length;
+            });
+        }
+
+        // Function to update store selects throughout the app
+        function updateStoreSelects() {
+            const selectors = [
+                'employeeStoreFilter', 
+                'newEmployeeStore', 
+                'payslipStore', 
+                'payslipStoreFilter',
+                'payslipListStoreFilter'
+            ];
+            
+            selectors.forEach(selectorId => {
+                const select = document.getElementById(selectorId);
+                if (select) {
+                    // Keep the first option
+                    const firstOption = select.options[0];
+                    select.innerHTML = '';
+                    select.appendChild(firstOption);
+                    
+                    // Add store options
+                    stores.forEach(store => {
+                        const option = document.createElement('option');
+                        option.value = store.id;
+                        option.textContent = store.name;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        // Function to handle login
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const user = employees.find(e => e.id === username && e.password === password);
+            
+            if (user) {
+                currentUser = user;
+                document.getElementById('loginForm').classList.add('hidden');
+                
+                if (user.isAdmin) {
+                    document.getElementById('adminDashboard').classList.remove('hidden');
+                    showTab('storeManagement');
+                } else {
+                    document.getElementById('employeePanel').classList.remove('hidden');
+                    document.getElementById('employeeName').textContent = user.name;
+                    
+                    // Show store badge
+                    const storeBadge = document.getElementById('employeeStoreBadge');
+                    const userStore = stores.find(s => s.id === user.storeId);
+                    if (userStore) {
+                        storeBadge.textContent = userStore.name;
+                    } else {
+                        storeBadge.textContent = 'Loja não atribuída';
+                    }
+                    
+                    updateEmployeePayslipTable();
+                }
+            } else {
+                alert('Usuário ou senha incorretos!');
+            }
+        }
+
+        // Function to handle logout
+        function logout() {
+            currentUser = null;
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('employeePanel').classList.add('hidden');
+        }
+
+        // Function to switch between admin tabs
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab');
+            const content = document.querySelectorAll('.admin-dashboard');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            content.forEach(c => c.classList.add('hidden'));
+            
+            const activeTab = document.querySelector(`.tab[onclick="showTab('${tabId}')"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        // Function to add a new store
+        function addStore() {
+            const name = document.getElementById('newStoreName').value;
+            const code = document.getElementById('newStoreCode').value;
+            
+            if (!name || !code) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            if (stores.some(s => s.id === code)) {
+                alert('Código de loja já existe!');
+                return;
+            }
+            
+            stores.push({
+                id: code,
+                name: name,
+                employeeCount: 0
+            });
+            
+            updateStoreTable();
+            updateStoreSelects();
+            
+            // Clear form
+            document.getElementById('newStoreName').value = '';
+            document.getElementById('newStoreCode').value = '';
+            
+            alert('Loja adicionada com sucesso!');
+        }
+
+        // Function to update store table
+        function updateStoreTable() {
+            const table = document.getElementById('storeTable').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
+            
+            stores.forEach(store => {
+                const row = table.insertRow();
+                
+                const nameCell = row.insertCell(0);
+                nameCell.textContent = store.name;
+                
+                const codeCell = row.insertCell(1);
+                codeCell.textContent = store.id;
+                
+                const employeeCountCell = row.insertCell(2);
+                employeeCountCell.textContent = store.employeeCount;
+                
+                const actionCell = row.insertCell(3);
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.className = 'btn btn-danger';
+                deleteButton.onclick = function() { deleteStore(store.id); };
+                actionCell.appendChild(deleteButton);
+            });
+        }
+
+        // Function to delete a store
+        function deleteStore(id) {
+            // Check if store has employees
+            const storeEmployees = employees.filter(e => e.storeId === id);
+            
+            if (storeEmployees.length > 0) {
+                alert('Não é possível excluir uma loja com funcionários associados. Remova os funcionários primeiro.');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja excluir esta loja?')) {
+                const index = stores.findIndex(s => s.id === id);
+                if (index !== -1) {
+                    stores.splice(index, 1);
+                    
+                    // Also delete related payslips
+                    payslips = payslips.filter(p => p.storeId !== id);
+                    
+                    updateStoreTable();
+                    updateStoreSelects();
+                    
+                    alert('Loja excluída com sucesso!');
+                }
+            }
+        }
+
+        // Function to add a new employee
+        function addEmployee() {
+            const name = document.getElementById('newEmployeeName').value;
+            const id = document.getElementById('newEmployeeId').value;
+            const storeId = document.getElementById('newEmployeeStore').value;
+            const password = document.getElementById('newEmployeePassword').value;
+            
+            if (!name || !id || !storeId || !password) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            if (employees.some(e => e.id === id)) {
+                alert('ID/Matrícula já existe!');
+                return;
+            }
+            
+            employees.push({
+                id: id,
+                name: name,
+                password: password,
+                isAdmin: false,
+                storeId: storeId
+            });
+            
+            updateStoreCounters();
+            updateStoreTable();
+            updateEmployeeTable();
+            updatePayslipEmployeeSelect();
+            
+            // Clear form
+            document.getElementById('newEmployeeName').value = '';
+            document.getElementById('newEmployeeId').value = '';
+            document.getElementById('newEmployeeStore').value = '';
+            document.getElementById('newEmployeePassword').value = '';
+            
+            alert('Funcionário adicionado com sucesso!');
+        }
+
+        // Function to filter employees by store
+        function filterEmployeesByStore() {
+            const storeId = document.getElementById('employeeStoreFilter').value;
+            currentStoreFilter = storeId;
+            updateEmployeeTable();
+        }
+
+        // Function to update employee table with filter
+        function updateEmployeeTable() {
+            const table = document.getElementById('employeeTable').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
+            
+            const filteredEmployees = currentStoreFilter === 'all' 
+                ? employees.filter(e => !e.isAdmin)
+                : employees.filter(e => e.storeId === currentStoreFilter && !e.isAdmin);
+            
+            filteredEmployees.forEach(employee => {
+                const row = table.insertRow();
+                
+                const nameCell = row.insertCell(0);
+                nameCell.textContent = employee.name;
+                
+                const idCell = row.insertCell(1);
+                idCell.textContent = employee.id;
+                
+                const storeCell = row.insertCell(2);
+                const employeeStore = stores.find(s => s.id === employee.storeId);
+                storeCell.textContent = employeeStore ? employeeStore.name : 'Não atribuído';
+                
+                const actionCell = row.insertCell(3);
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.className = 'btn btn-danger';
+                deleteButton.onclick = function() { deleteEmployee(employee.id); };
+                actionCell.appendChild(deleteButton);
+            });
+        }
+
+        // Function to delete an employee
+        function deleteEmployee(id) {
+            if (confirm('Tem certeza que deseja excluir este funcionário?')) {
+                const index = employees.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    employees.splice(index, 1);
+                    
+                    // Also delete their payslips
+                    payslips = payslips.filter(p => p.employeeId !== id);
+                    
+                    updateStoreCounters();
+                    updateStoreTable();
+                    updateEmployeeTable();
+                    updatePayslipEmployeeSelect();
+                    updatePayslipTable();
+                    
+                    alert('Funcionário excluído com sucesso!');
+                }
+            }
+        }
+
+        // Function to update employee select dropdown for payslips based on selected store
+        function updatePayslipEmployeeSelect() {
+            const storeId = document.getElementById('payslipStore').value;
+            const select = document.getElementById('payslipEmployee');
+            select.innerHTML = '<option value="">Selecione um funcionário</option>';
+            
+            if (!storeId) return;
+            
+            const storeEmployees = employees.filter(e => e.storeId === storeId && !e.isAdmin);
+            
+            storeEmployees.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee.id;
+                option.textContent = `${employee.name} (${employee.id})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Function to add a new payslip
+        function addPayslip() {
+            const storeId = document.getElementById('payslipStore').value;
+            const employeeId = document.getElementById('payslipEmployee').value;
+            const month = document.getElementById('payslipMonth').value;
+            const fileInput = document.getElementById('payslipFile');
+            
+            if (!storeId || !employeeId || !month || !fileInput.files[0]) {
+                alert('Por favor, preencha todos os campos e selecione um arquivo!');
+                return;
+            }
+            
+            const filename = fileInput.files[0].name;
+            
+            // In a real app, you would upload the file to the server here
+            
+            payslips.push({
+                employeeId: employeeId,
+                month: month,
+                filename: filename,
+                storeId: storeId
+            });
+            
+            updatePayslipTable();
+            updateEmployeePayslipTable();
+            
+            // Clear form
+            document.getElementById('payslipStore').value = '';
+            document.getElementById('payslipEmployee').value = '';
+            document.getElementById('payslipMonth').value = '';
+            document.getElementById('payslipFile').value = '';
+            
+            alert('Holerite adicionado com sucesso!');
+        }
+
+        // Function to filter payslips by store
+        function filterPayslipsByStore() {
+            const storeId = document.getElementById('payslipListStoreFilter').value;
+            updatePayslipTable(storeId);
+        }
+
+        // Function to update payslip table with filter
+        function updatePayslipTable(storeFilter) {
+            const table = document.getElementById('payslipTable').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
+            
+            const storeId = storeFilter || document.getElementById('payslipListStoreFilter').value;
+            
+            const filteredPayslips = storeId === 'all' 
+                ? payslips
+                : payslips.filter(p => p.storeId === storeId);
+            
+            filteredPayslips.forEach((payslip, index) => {
+                const row = table.insertRow();
+                
+                const storeCell = row.insertCell(0);
+                const payslipStore = stores.find(s => s.id === payslip.storeId);
+                storeCell.textContent = payslipStore ? payslipStore.name : 'Desconhecida';
+                
+                const employeeCell = row.insertCell(1);
+                const employee = employees.find(e => e.id === payslip.employeeId);
+                employeeCell.textContent = employee ? employee.name : 'Funcionário Desconhecido';
+                
+                const monthCell = row.insertCell(2);
+                monthCell.textContent = payslip.month;
+                
+                const fileCell = row.insertCell(3);
+                fileCell.textContent = payslip.filename;
+                
+                const actionCell = row.insertCell(4);
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.className = 'btn btn-danger';
+                deleteButton.onclick = function() { deletePayslip(payslip); };
+                actionCell.appendChild(deleteButton);
+            });
+        }
+
+        // Function to delete a payslip
+        function deletePayslip(payslip) {
+            if (confirm('Tem certeza que deseja excluir este holerite?')) {
+                const index = payslips.findIndex(p => 
+                    p.employeeId === payslip.employeeId && 
+                    p.month === payslip.month &&
+                    p.filename === payslip.filename);
+                
+                if (index !== -1) {
+                    payslips.splice(index, 1);
+                    filterPayslipsByStore();
+                    updateEmployeePayslipTable();
+                    alert('Holerite excluído com sucesso!');
+                }
+            }
+        }
+
+        // Function to update employee's payslip table
+        function updateEmployeePayslipTable() {
+            if (!currentUser || currentUser.isAdmin) return;
+            
+            const table = document.getElementById('employeePayslipTable').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
+            
+            const employeePayslips = payslips.filter(p => p.employeeId === currentUser.id);
+            
+            if (employeePayslips.length === 0) {
+                const row = table.insertRow();
+                const cell = row.insertCell(0);
+                cell.colSpan = 2;
+                cell.textContent = 'Nenhum holerite disponível';
+                return;
+            }
+            
+            employeePayslips.forEach(payslip => {
+                const row = table.insertRow();
+                
+                const monthCell = row.insertCell(0);
+                monthCell.textContent = payslip.month;
+                
+                const actionCell = row.insertCell(1);
+                const viewButton = document.createElement('button');
+                viewButton.textContent = 'Visualizar';
+                viewButton.className = 'btn';
+                viewButton.onclick = function() { viewPayslip(payslip.filename); };
+                actionCell.appendChild(viewButton);
+            });
+        }
+
+        // Function to view a payslip (simulated)
+        function viewPayslip(filename) {
+            alert(`Em um sistema real, o arquivo "${filename}" seria aberto para visualização.`);
+        }
+    </script>
+</body>
+</html>
